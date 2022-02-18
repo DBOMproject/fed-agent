@@ -1,0 +1,79 @@
+{
+	"info": {
+		"_postman_id": "7e1c5cda-afe1-4383-8bc3-a8e96d0d4e7d",
+		"name": "FedAgent",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login to account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Join Room",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{   \r\n    \"roomId\": \"#user1public:example.com:8481\",\r\n    \"action\": \"JOIN\",\r\n    \"repoID\": \"DB1\",\r\n    \"channelId\": \"C1\",\r\n    \"role\": \"read\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscribeChannel",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscribeChannel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get status on subscription",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/getRequestState/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"getRequestState",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
