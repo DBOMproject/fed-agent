@@ -56,9 +56,10 @@ app.use(express.urlencoded({
 app.use(cors());
 
 const userState = {};
-// sleep function
-// eslint-disable-next-line no-promise-executor-return
-function sleep(ms) { return new Promise((resolve) => { setTimeout(resolve, ms) });}
+/**
+ * sleep function 
+ */ 
+function sleep(ms) { return new Promise((resolve) => { setTimeout(resolve, ms); });}
 
 /**
  * Configure Database agent based on the passed parameters and update the agent-config.yaml file
