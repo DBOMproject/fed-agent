@@ -23,7 +23,7 @@ DBoM Federation Agent application allows a user to subscribe to a remote DBoM ch
 
 ## Deployment 
 
-Instructions for deploying the database-access-control using docker-compose can be found [here](https://github.com/DBOMproject/deployments/docker-compose-autochannel-setup)
+Instructions for deploying the fed-agent using docker-compose can be found [here](https://github.com/DBOMproject/deployments/docker-compose-autochannel-setup)
 
 
 ## Getting help

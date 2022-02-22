@@ -51,17 +51,24 @@ app.use(express.json());
 app.use(express.urlencoded({
   extended: true,
 }));
-app.use('/lib', express.static('node_modules'));
 
 // For preflight checks to pass
 app.use(cors());
 
 const userState = {};
-// sleep function
-// eslint-disable-next-line no-promise-executor-return
-function sleep(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+/** 
+ * sleep function
+ */ 
+ function sleep(ms) { return new Promise((resolve) => { setTimeout(resolve, ms); }); }
 
-// Configure Database agent based on the passed parameters and update the agent-config.yaml file
+/**
+ * Configure Database agent based on the passed parameters and update the agent-config.yaml file
+ * @param {String} uri uri received from remote DBoM node
+ * @param {String} userName username configured in remote database
+ * @param {String} pwd password for username
+ * @param {String} repoID repoID for the channel
+ * @param {uuid} joinId unique id for the request
+ */ 
 async function configureAgent(uri, userName, pwd, repoID, joinId) {
   try {
     // Create docker container to run the database agent
