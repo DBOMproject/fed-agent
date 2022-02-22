@@ -108,7 +108,7 @@ async function joinRoomOnInvite(member, count) {
           const retrievedEvents = chunk.filter((message) => message.type === 'm.room.message');
           // eslint-disable-next-line max-len
           if (retrievedEvents.length) {
-            const readdata = fs.readFileSync('processedEvents.json', (err) => {
+            const readdata = fs.readFileSync('processedEvents.json', {flag:'a+'}, (err) => {
               if (err) throw err;
             });
             // eslint-disable-next-line max-len
@@ -223,7 +223,7 @@ client.on('Room.timeline', async (event, room) => {
   if (event.getType() === 'm.room.message' && event.getSender() !== client.credentials.userId) {
     console.log('Recieved message:', event.getContent().body);
     const rmId = event.getRoomId();
-    const readdata = fs.readFileSync('processedEvents.json', (err) => {
+    const readdata = fs.readFileSync('processedEvents.json', {flag:'a+'}, (err) => {
       if (err) throw err;
     });
     if (readdata.length > 0 && JSON.parse(readdata)[`${rmId}-lastProcessedEventTS`] >= event.getTs()) {
