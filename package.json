@@ -1,0 +1,30 @@
+{
+  "name": "fed-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "generate-docs": "jsdoc --configure docs/.jsdoc.json --verbose",
+    "start": "node app.js",
+    "lint-fix": "standard --fix"
+  },
+  "keywords": [],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "docker-cli-js": "^2.8.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "js-yaml": "^4.1.0",
+    "matrix-js-sdk": "^15.1.1",
+    "uuid4": "^2.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.3.0",
+    "eslint-config-airbnb": "^19.0.1",
+    "eslint-plugin-import": "^2.25.3",
+    "jsdoc": "^3.6.7",
+    "minami": "^1.2.3"
+  }
+}
