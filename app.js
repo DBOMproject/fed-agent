@@ -56,6 +56,10 @@ app.use(express.urlencoded({
 app.use(cors());
 
 const userState = {};
+
+// store subscription requests
+let subscriptionRequests= [];
+
 /**
  * sleep function 
  */ 
@@ -179,6 +183,82 @@ app.post('/login', (req, res) => {
 });
 
 /**
+ * List of subscription requests
+ */
+app.get('/subscriptionRequests', (req, res) => {
+  res.send({"subscriptionRequests": subscriptionRequests})
+})
+
+/**
+ * Get suscription request by Id
+ */
+app.get('/subscriptionRequests/:id', (req, res) => {
+const reqId = req.params.id;
+const requestObj = subscriptionRequests.find(ele => ele.joinId === reqId)
+if(requestObj){
+res.json({requestObject: requestObj})
+}
+else{
+  res.send("Id not found")
+}
+
+})
+
+/**
+ * @param id Id of the subscription request to be approved
+ * Approve the subscription request of the given id
+ */
+
+app.post('/subscriptionRequests/:id/accept', (req, res) => {
+
+let id = req.params.id;
+let subscriptionObjIndex = subscriptionRequests.findIndex(request => request.joinId === id)
+subscriptionRequests[subscriptionObjIndex].status = 'approved'
+const {joinId ,userName, userFQDN, role, channelId, repoID} = subscriptionRequests[subscriptionObjIndex]
+axios.post(`${databaseAccessControlUrl}/addUser`, { userName, role, channelId }).then((data) => {
+ const credentials = data.data;
+ credentials.joinId = joinId;
+ credentials.repoID = repoID;
+ res.json({Message: `Subscription with id ${id} has been approved`})
+ // Create a private direct chat to send the database credentials
+ client.createRoom({
+   preset: 'trusted_private_chat',
+   invite: [userFQDN],
+   is_direct: true,
+   name: `${userName}-${channelId}-${new Date().getTime()}`,
+   room_alias_name: `${userName}-${channelId}-${new Date().getTime()}`,
+ }).then(async (roomId) => {
+   const content = {
+     body: JSON.stringify(credentials),
+     msgtype: 'm.text',
+   };
+   // Send the credentials to the user
+   client.sendMessage(roomId.room_id, content)
+     .then(() => { console.log('message sent'); })
+     .catch((err) => {
+       console.log(err);
+     });
+ }).catch((err) => {
+   console.log(err);
+ });
+}).catch((err) => {
+ console.log(err);
+});
+  
+})
+
+/**
+ * @param id Id of the subscription request to be rejected
+ * Reject the subscription request of the given id
+ */
+app.post('/subscriptionRequest/:id/reject', (req, res) => {
+let id = req.params.id
+let subscriptionObjIndex = subscriptionRequests.findIndex(request => request.joinId === id)
+subscriptionRequests[subscriptionObjIndex].status = 'rejected'
+res.json({Message: `Subscription with id ${id} has been rejected`})
+})
+
+/**
  * Send a request to subscribe a channel
  * @param {string} roomId Id of the remote public room
  * @param {string} action 'JOIN/SUBSCRIBE' to subscribe to a channel
@@ -254,36 +334,17 @@ client.on('Room.timeline', async (event, room) => {
           if (foundRepo.length > 0) {
             const userFQDN = event.getSender();
             const userName = event.getSender().split(':')[0].slice(1);
-            // call database access control agent to get the credentials
-            axios.post(`${databaseAccessControlUrl}/addUser`, { userName, role, channelId }).then((data) => {
-              const credentials = data.data;
-              credentials.joinId = joinId;
-              credentials.repoID = repoID;
-
-              // Create a private direct chat to send the database credentials
-              client.createRoom({
-                preset: 'trusted_private_chat',
-                invite: [userFQDN],
-                is_direct: true,
-                name: `${userName}-${channelId}-${new Date().getTime()}`,
-                room_alias_name: `${userName}-${channelId}-${new Date().getTime()}`,
-              }).then(async (roomId) => {
-                const content = {
-                  body: JSON.stringify(credentials),
-                  msgtype: 'm.text',
-                };
-                // Send the credentials to the user
-                client.sendMessage(roomId.room_id, content)
-                  .then(() => { console.log('message sent'); })
-                  .catch((err) => {
-                    console.log(err);
-                  });
-              }).catch((err) => {
-                console.log(err);
-              });
-            }).catch((err) => {
-              console.log(err);
-            });
+            // push subscription request to the queue
+            const subscriptionDetails = {
+              joinId: `${joinId}`,
+              userName: `${userName}`,
+              userFQDN: `${userFQDN}`,
+              channelId: `${channelId}`,
+              repoID: `${repoID}`,
+              role: `${role}`,
+              status: 'pending'
+            };
+          subscriptionRequests.push(subscriptionDetails)
           }
         } else {
           console.log(`${repoID} not found`);
