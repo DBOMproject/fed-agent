@@ -74,6 +74,98 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get list of subscription requests",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/subscriptionRequests/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscriptionRequests",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accept subscription request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/subscriptionRequests/:id/accept",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscriptionRequests",
+						":id",
+						"accept"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reject subscription request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/subscriptionRequests/:id/reject",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscriptionRequests",
+						":id",
+						"reject"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get subscription request by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/subscriptionRequests/:id",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscriptionRequests",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
